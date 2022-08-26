@@ -12,6 +12,8 @@ export class MaintenanceService {
     car: {
       select: {
         id: true,
+        model: true,
+        brand: true,
         plate: true,
       }
     },

@@ -55,6 +55,8 @@ model Maintenance {
 
   status MaintenanceStatus @default(WAITING)
 
+  description String?
+
   carId String @map("car_id")
   car   Car    @relation(fields: [carId], references: [id])
 
