@@ -5,6 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -17,7 +21,9 @@ model Customer {
   cpf  String @unique() @db.VarChar(11)
 
   car         Car[]
-  maintenence Maintenence[]
+  maintenance Maintenance[]
+
+  @@map("customer")
 }
 
 model Car {
@@ -28,27 +34,35 @@ model Car {
 
   plate String @unique() @db.VarChar(7)
 
-  customer    Customer      @relation(fields: [customerId], references: [id])
-  customerId  String
-  maintenence Maintenence[]
+  customerId String   @map("customer_id")
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  maintenance Maintenance[]
+
+  @@map("car")
 }
 
-enum MaintenenceStatus {
+enum MaintenanceStatus {
   WAITING
   IN_PROGRESS
   DONE
+
+  @@map("maintenance_status")
 }
 
-model Maintenence {
+model Maintenance {
   id String @id() @default(uuid())
 
-  status MaintenenceStatus @default(IN_PROGRESS)
+  status MaintenanceStatus @default(WAITING)
 
-  car      Car      @relation(fields: [carId], references: [id])
-  customer Customer @relation(fields: [customerId], references: [id])
+  carId String @map("car_id")
+  car   Car    @relation(fields: [carId], references: [id])
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
-  carId      String
-  customerId String
+  customerId String   @map("customer_id")
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("maintenance")
 }

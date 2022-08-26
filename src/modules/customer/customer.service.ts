@@ -6,6 +6,20 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 @Injectable()
 export class CustomerService {
 
+  selectCustomerQuery = {
+    id: true,
+    name: true,
+    cpf: true,
+    car: {
+      select: {
+        id: true,
+        model: true,
+        brand: true,
+        plate: true,
+      }
+    }
+  };
+
   constructor(private prismaService: PrismaService) { }
 
   async create(createCustomerDto: CreateCustomerDto) {
@@ -15,14 +29,17 @@ export class CustomerService {
   }
 
   async findAll() {
-    return this.prismaService.customer.findMany();
+    return this.prismaService.customer.findMany({
+      select: this.selectCustomerQuery
+    });
   }
 
   async findOne(id: string) {
     const customer = await this.prismaService.customer.findUnique({
       where: { 
         id
-      }
+      },
+      select: this.selectCustomerQuery
     });
 
     if(!customer) {
