@@ -83,6 +83,17 @@ export class MaintenanceService {
     });
   }
 
+  findByCarId(carId: string) {
+    return this.prismaService.maintenance.findMany({
+      where: {
+        carId,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+  }
+
   update(id: string, { status }: UpdateMaintenanceDto) {
     return this.prismaService.maintenance.update({
       where: {
