@@ -90,7 +90,8 @@ export class MaintenanceService {
       },
       data: {
         status,
-      }
+      },
+      select: this.selectMaintenanceQuery
     })
   }
 }
